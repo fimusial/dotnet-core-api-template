@@ -1,0 +1,31 @@
+# Please refer https://aka.ms/HTTPdoSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+version: '3.4'
+
+services:
+  server:
+    image: server
+    build:
+      context: .
+      dockerfile: Src/Server/Dockerfile
+    ports:
+      - "8080:80"
+    env_file:
+      - ".env"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - "ConnectionStrings__Default=Server=database;Database=TodoItems;User=sa;Password=${SA_PASSWORD};MultipleActiveResultSets=True;"
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+    depends_on:
+      - "database"
+
+  database:
+    image: "mcr.microsoft.com/mssql/server"
+    env_file:
+      - ".env"
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "SA_PASSWORD=${SA_PASSWORD}"
+    ports:
+      - "4300:1433"
