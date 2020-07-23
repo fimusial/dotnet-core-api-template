@@ -34,7 +34,7 @@ namespace Server.Controllers
                 Name = dto.Name,
                 Description = dto.Description
             });
-            return CreatedAtAction(nameof(Post), result);
+            return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
         }
 
         [HttpPut]
